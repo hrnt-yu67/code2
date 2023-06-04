@@ -4,16 +4,24 @@ import threading
 import datetime
 
 def start_server():
-    # サーバーのIPアドレスとポート番号
-    HOST = '127.0.0.1'
-    PORT = 12345
-
+    # サーバーのIPアドレスとポート番号    
+    HOST = ip_entry.get()
+    PORT = port_entry.get()
+ 
+    if len(HOST)==0  or  len(PORT)==0:
+        HOST = '127.0.0.1'
+        PORT = 12345
+            
     # サーバーのソケットを作成
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((HOST, PORT))
     server_socket.listen(1)
 
     status_label.configure(text="サーバーが起動しました。クライアントの接続を待機中...")
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")    
+    received_text.configure(state='normal')
+    received_text.insert('end', f"{timestamp}: 受信を開始します：\n")
+    received_text.configure(state='disabled')
 
     client_socket, addr = server_socket.accept()
     status_label.configure(text=f"クライアントが接続しました。アドレス: {addr}")
@@ -28,6 +36,11 @@ def start_server():
 
         response = "OK"
         client_socket.sendall(response.encode())
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        received_text.configure(state='normal')
+        received_text.insert('end', f"{timestamp}: {response}\n")
+        received_text.configure(state='disabled')
+
 
     client_socket.close()
     server_socket.close()
@@ -46,10 +59,19 @@ def close_connection():
     window.destroy()
 
 window = tk.Tk()
-window.title("サーバーアプリ")
+window.title("メッセージ受信アプリ")
 
 status_label = tk.Label(window, text="サーバーが起動していません")
 status_label.pack()
+
+ip_label = tk.Label(window, text="IPアドレス:")
+ip_entry = tk.Entry(window)
+ip_label.pack()
+ip_entry.pack()
+port_label = tk.Label(window, text="ポート番号:")
+port_entry = tk.Entry(window)
+port_label.pack()
+port_entry.pack()
 
 received_label = tk.Label(window, text="受信したメッセージ:")
 received_label.pack()
