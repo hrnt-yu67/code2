@@ -7,6 +7,9 @@ PORT = 12345
 def send_message():
     message = message_entry.get()
 
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((HOST, PORT))
+
     client_socket.sendall(message.encode())
 
     response = client_socket.recv(1024).decode()
@@ -20,8 +23,6 @@ def close_connection():
     client_socket.close()
     window.destroy()
 
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((HOST, PORT))
 
 window = tk.Tk()
 window.title("クライアントアプリ")
