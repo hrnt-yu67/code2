@@ -9,8 +9,8 @@ def start_server():
     PORT = port_entry.get()
  
     if len(HOST)==0  or  len(PORT)==0:
-        HOST = '127.0.0.1'
-        PORT = 12345
+        HOST = '192.168.1.15'
+        PORT = 4000
             
     # サーバーのソケットを作成
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
